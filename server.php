@@ -83,16 +83,18 @@ if (isset($_POST['login_user'])) {
     }
   
     if (count($errors) == 0) {
-        $password = md5($password);
-        $query = "SELECT * FROM usuarios WHERE nombre='$username' AND password='$password'";
-        $results = mysqli_query($db, $query);
-        if (mysqli_num_rows($results) == 1) {
-          $_SESSION['nombre'] = $username;
-          $_SESSION['success'] = "Iniciaste sesion";
-          header('location: index.php');
-        }else {
-            array_push($errors, "Nombre de usuario o contraseña incorrectos");
-        }
+         //$password = password_hash($password, PASSWORD_DEFAULT);
+         $query = "SELECT password FROM usuarios WHERE nombre='$username'";
+         $results = mysqli_query($db, $query);
+         $row = $results->fetch_row();
+         $hash = $row[0] ?? null;
+         if (password_verify($password, $hash)) {
+           $_SESSION['nombre'] = $username;
+           $_SESSION['success'] = "Iniciaste sesion";
+           header('location: index.php');
+         }else {
+             array_push($errors, "Nombre de usuario o contraseña incorrectos");
+         }
     }
   }
   

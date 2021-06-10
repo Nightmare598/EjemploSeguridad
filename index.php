@@ -14,16 +14,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Home</title>
+	<title>Index</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
 <div class="header">
-	<h2>Home Page</h2>
+	<h2>Pagina Principal</h2>
 </div>
 <div class="content">
-  	<!-- notification message -->
+  	<!-- Notificacion -->
   	<?php if (isset($_SESSION['success'])) : ?>
       <div class="error success" >
       	<h3>
@@ -35,7 +35,7 @@
       </div>
   	<?php endif ?>
 
-    <!-- logged in user information -->
+    <!-- Logueado con la info del usuario -->
     <?php  if (isset($_SESSION['nombre'])) : ?>
     	<p>Bienvenido <strong><?php echo $_SESSION['nombre']; ?></strong></p>
     	<p> <a href="index.php?logout='1'" style="color: red;">Cerrar sesion</a> </p>

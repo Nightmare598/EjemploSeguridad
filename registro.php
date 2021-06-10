@@ -7,7 +7,7 @@
 </head>
 <body>
   <div class="header">
-  	<h2>Register</h2>
+  	<h2>Registro</h2>
   </div>
 	
   <form method="post" action="registro.php">
@@ -29,10 +29,10 @@
   	  <input type="password" name="password_2">
   	</div>
   	<div class="input-group">
-  	  <button type="submit" class="btn" name="reg_user">Register</button>
+  	  <button type="submit" class="btn" name="reg_user">Registrar</button>
   	</div>
   	<p>
-  		Already a member? <a href="login.php">Sign in</a>
+  		¿Ya eres un miembro? <a href="login.php">Ingresar</a>
   	</p>
   </form>
 </body>
