@@ -55,7 +55,8 @@ if (isset($_POST['reg_user'])) {
   if (count($errors) == 0) {
 
     //TODO: Modificar el algoritmo
-  	$password = md5($password_1);//Encripta la contraseña antes de guardarla
+    $password = password_hash($password_1, PASSWORD_DEFAULT); //Usando bcrypt
+  	//$password = md5($password_1);//Encripta la contraseña antes de guardarla
 
   	$query = "INSERT INTO usuarios (nombre, email, password) 
   			  VALUES('$username', '$email', '$password')";
@@ -65,6 +66,10 @@ if (isset($_POST['reg_user'])) {
   	header('location: index.php');
   }
 }
+
+
+
+
 //Para el login
 if (isset($_POST['login_user'])) {
     $username = mysqli_real_escape_string($db, $_POST['username']);
