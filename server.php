@@ -1,78 +1,80 @@
 <?php
 session_start();
 
-// initializing variables
+// Inicializar variables
 $username = "";
 $email    = "";
 $errors = array(); 
 
-// connect to the database
+// Conectar a la base de datos
 $db = mysqli_connect('localhost', 'root', '', 'seguridad');
 
-// REGISTER USER
+// Registro de usuario
 if (isset($_POST['reg_user'])) {
-  // receive all input values from the form
+  //Esto evita un ataque tipo SQL Injection al restringir los caracteres especiales en los campos
   $username = mysqli_real_escape_string($db, $_POST['username']);
   $email = mysqli_real_escape_string($db, $_POST['email']);
   $password_1 = mysqli_real_escape_string($db, $_POST['password_1']);
   $password_2 = mysqli_real_escape_string($db, $_POST['password_2']);
 
-  // form validation: ensure that the form is correctly filled ...
-  // by adding (array_push()) corresponding error unto $errors array
-  if (empty($username)) { array_push($errors, "Username is required"); }
-  if (empty($email)) { array_push($errors, "Email is required"); }
-  if (empty($password_1)) { array_push($errors, "Password is required"); }
+  // Validación de datos en registro ...
+  // añadiendo (array_push())correspondiente al arreglo $errors
+  if (empty($username)) { array_push($errors, "Se requiere un nombre de usuario"); }
+  if (empty($email)) { array_push($errors, "Se requiere un Email"); }
+  if (empty($password_1)) { array_push($errors, "Se requiere una contraseña"); }
   if ($password_1 != $password_2) {
-	array_push($errors, "The two passwords do not match");
+	array_push($errors, "Las contraseñas no coinciden");
   }
 
   // Validar contraseña
-  $uppercase = preg_match('@[A-Z]@', $password_1);
-  $lowercase = preg_match('@[a-z]@', $password_1);
-  $number    = preg_match('@[0-9]@', $password_1);
-  $specialChars = preg_match('@[^\w]@', $password_1);
-  if(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($password) < 8) {
-    array_push($errors, "Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.");
+  $mayusculas = preg_match('@[A-Z]@', $password_1);
+  $minusculas = preg_match('@[a-z]@', $password_1);
+  $numero    = preg_match('@[0-9]@', $password_1);
+  $espcaracteres = preg_match('@[^\w]@', $password_1);
+  if(!$mayusculas || !$minusculas || !$numero || !$espcaracteres || strlen($password_1) < 8) {
+    array_push($errors, "La contraseña debe tener como minimo 8 caracteres de longitud y debe incluir al menos una mayúscula, un numero, y un caracter especial.");
 }
 
-  // first check the database to make sure 
-  // a user does not already exist with the same username and/or email
+  // Primero revisar la base de datos para asegurarse 
+  // que un usuario no tenga usuario o email repetidos
   $user_check_query = "SELECT * FROM usuarios WHERE nombre='$username' OR email='$email' LIMIT 1";
   $result = mysqli_query($db, $user_check_query);
   $user = mysqli_fetch_assoc($result);
   
-  if ($user) { // if user exists
+  if ($user) { // Si el usuario existe
     if ($user['nombre'] === $username) {
-      array_push($errors, "Username already exists");
+      array_push($errors, "Ese nombre ya existe");
     }
 
     if ($user['email'] === $email) {
-      array_push($errors, "email already exists");
+      array_push($errors, "Ese correo ya esta en uso");
     }
   }
 
-  // Finally, register user if there are no errors in the form
+  // Finalmente, registra si no hubieron errores en el formulario
   if (count($errors) == 0) {
-  	$password = md5($password_1);//encrypt the password before saving in the database
+
+    //TODO: Modificar el algoritmo
+  	$password = md5($password_1);//Encripta la contraseña antes de guardarla
 
   	$query = "INSERT INTO usuarios (nombre, email, password) 
   			  VALUES('$username', '$email', '$password')";
   	mysqli_query($db, $query);
   	$_SESSION['nombre'] = $username;
-  	$_SESSION['success'] = "You are now logged in";
+  	$_SESSION['success'] = "Iniciaste sesion";
   	header('location: index.php');
   }
 }
-
+//Para el login
 if (isset($_POST['login_user'])) {
     $username = mysqli_real_escape_string($db, $_POST['username']);
     $password = mysqli_real_escape_string($db, $_POST['password']);
   
     if (empty($username)) {
-        array_push($errors, "Username is required");
+        array_push($errors, "Se requiere un nombre de usuario");
     }
     if (empty($password)) {
-        array_push($errors, "Password is required");
+        array_push($errors, "Se requiere una contraseña");
     }
   
     if (count($errors) == 0) {
@@ -81,10 +83,10 @@ if (isset($_POST['login_user'])) {
         $results = mysqli_query($db, $query);
         if (mysqli_num_rows($results) == 1) {
           $_SESSION['nombre'] = $username;
-          $_SESSION['success'] = "You are now logged in";
+          $_SESSION['success'] = "Iniciaste sesion";
           header('location: index.php');
         }else {
-            array_push($errors, "Wrong username/password combination");
+            array_push($errors, "Nombre de usuario o contraseña incorrectos");
         }
     }
   }

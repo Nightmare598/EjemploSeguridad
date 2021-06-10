@@ -37,8 +37,8 @@
 
     <!-- logged in user information -->
     <?php  if (isset($_SESSION['nombre'])) : ?>
-    	<p>Welcome <strong><?php echo $_SESSION['nombre']; ?></strong></p>
-    	<p> <a href="index.php?logout='1'" style="color: red;">logout</a> </p>
+    	<p>Bienvenido <strong><?php echo $_SESSION['nombre']; ?></strong></p>
+    	<p> <a href="index.php?logout='1'" style="color: red;">Cerrar sesion</a> </p>
     <?php endif ?>
 </div>
 		
